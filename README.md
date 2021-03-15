@@ -69,14 +69,16 @@ O sistema como um todo é composto por:
 
 Os sistema de controle possui os seguintes requisitos:
 1. O código deve ser desenvolvido em C/C++;
-2. O sistema deve implementar o controle de temperatura do ambiente fechado utilizando as abordagens PID para o Resistor e On/Off para a Ventoinha;
+2. O sistema deve implementar o controle de temperatura do ambiente fechado utilizando a técnica de controle PID para o  Resistor e a Ventoinha;
 3. O sistema deve apresentar uma interface de controle via terminal com menu de interação com o usuário e dados de temperaturas (TI, TE, TR) sendo atualizados a cada 1 segundo;
-4. O usuário deve ser capaz de escolher se quer definir a temperatura de referência (TR) através de entrada de teclado ou pelo potenciômetro;
-5. No caso da temperatura ser definida pelo potenciômetro, o programa deve consultar o valor do potenciômetro através da comunicação UART com o Arduino a cada 500 ms;
+4. O usuário deve ser capaz de escolher se quer definir a temperatura de referência (TR) através de entrada de teclado ou pelo potenciômetro (Durante a execução do programa);
+5. No caso da temperatura ser definida pelo potenciômetro, o programa deve consultar o valor do potenciômetro através da comunicação UART com o Arduino a cada 1 segundo;
 6. O sistema deve apresentar na tela LCD os valores das temperaturas (TI, TE, TR);
-7. O programa deve gerar um log em arquivo CSV das seguintes informações a cada 02 segundos (Data e hora, temperatura interna, temperatura externa, temperatura definida pelo usuário).
-8. O valor de histerese (Ventoinha) deve poder ser definido pelo usuário;
-9. O código deve possuir Makefile para compilação;
+7. O programa deve gerar um log em arquivo CSV das seguintes informações a cada 02 segundos com os seguintes valores: (Data e hora, temperatura interna, temperatura externa, temperatura definida pelo usuário, valor de acionamento dos atuadores (Resistor e Venoinha em valor percentual)).
+8. O código deve possuir Makefile para compilação;
+9. O sistema deve conter em seu README as instruções de compilação e uso, bem como gráficos* com o resultado de um experimento sendo executado pelo período de 10 minutos com variação da temperatura de referência sendo dada pelo potenciômetro.
+ 
+\* Serão necessários dois gráficos. Um deles plotando as temperaturas (Ambiente, Interna e Referência (Potenciômetro)) e outro gráfico com o valor do acionamento dos atuadores (Resistor / Ventoinha) em valor percentual entre -100% e 100%.
 
 ## 6. Comunicação UART com Arduino
 
@@ -101,15 +103,18 @@ Para acessar as informações via UART envie mensagens em formato MODBUS com o s
 
 A avaliação será realizada seguindo os seguintes critérios:
 
-<!-- |   ITEM    |   COMENTÁRIO  |   VALOR   |
+|   ITEM    |   COMENTÁRIO  |   VALOR   |
 |------------------------|---------------------------------------------------------------------------------------------------------|---------|
-|**Implementação do controlador** | Correta implementação do controlador PID (Resistor) e do controlador On/Off com histerese (Ventoinha), incluindo a leitura das temperaturas e acionamento dos atuadores. |    3,0 |
+|**Implementação do controlador PID** | Correta implementação do controlador PID (Resistor / Venotinha), incluindo a leitura das temperaturas e acionamento dos atuadores. |    2,0 |
 |**Menu de controle**        | Correta implementação do menu com as opções de acesso do usuário e sua atualização de informações. | 1,0 |
-|**Leitura do Potenciômetro**| Leitura do potenciômetro através da comunicação UART com o Arduino. | 1,5 |
-|**Mostrador no LCD**        | Apresentação das 3 temperatudas no LCD. | 1,5 |
+|**Leitura da Temperatura Ambiente**| Leitura dos valores de Temperatura Ambiente (Sensor BME280). | 0,5 |
+|**Leitura da Temperatura Interna e Potenciômetro**| Leitura dos valores de Temperatura Internet e Potenciômetro através da comunicação MODBUS-UART. | 1,5 |
+|**Mostrador no LCD**        | Apresentação das 3 temperatudas no LCD. | 1,0 |
 |**Armazenamento em arquivo**| Armazenamento em arquivo CSV dos dados medidos. |   1,0 |
 |**Qualidade do Código**     | Utilização de boas práticas como o uso de bons nomes, modularização e organização em geral.    |  2,0 |
-|**Pontuação Extra**         |   Qualidade e usabilidade acima da média.  |  0,5   | -->
+|**README com Experimento** | Documentação README com instruçoes de compilaçõa, uso e relatório do experimento com o gráfico. |  1,0 |
+
+|**Pontuação Extra**         |   Qualidade e usabilidade acima da média.  |  0,5   |
 
 ## 7. Referências
 
