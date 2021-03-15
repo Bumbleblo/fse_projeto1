@@ -86,8 +86,16 @@ O Arduino fornece duas informações para o sistema, valor da temperatura intern
 Para acessar as informações via UART envie mensagens em formato MODBUS com o seguinte conteúdo:
 
 1. Código do Dispositivo (Arduino): 0x01
-2. Leitura de Valor de Temperatura Interna (TI): Código 0x23, Sub-código: 0xA1 + 4 últimos dígitos da matrícula. O retorno será o valor em Float (4 bytes) da temperatura interna do sistema com o pacote no formato MODBUS;
-4. Leitura da temperatura de referência - TR (Potenciômetro): Código 0x23, Sub-código: 0xA1 + 4 últimos dígitos da matrícula. O retorno será o valor em Float (4 bytes) da temperatura de referência definida pelo usuário com o pacote no formato MODBUS;
+2. Leitura de Valor de Temperatura Interna (TI): Código 0x23, Sub-código: 0xC1 + 4 últimos dígitos da matrícula. O retorno será o valor em Float (4 bytes) da temperatura interna do sistema com o pacote no formato MODBUS;
+4. Leitura da temperatura de referência - TR (Potenciômetro): Código 0x23, Sub-código: 0xC2 + 4 últimos dígitos da matrícula. O retorno será o valor em Float (4 bytes) da temperatura de referência definida pelo usuário com o pacote no formato MODBUS;
+
+<p style="text-align: center;">Tabela 1 - Códigos do Protocolo de Comunicação</p>
+
+| Código |	Sub-código + Matricula | Comando de Solicitação de Dados |	Mensagem de Retorno |
+|:-:|:-:|:--|:--|
+| **0x23** | **0xC1** N N N N |	Solicita Temperatura Interna  | float (4 bytes) |
+| **0x23** | **0xC2** N N N N |	Solicita Temperatura Potenciômetro	| float (4 bytes) |
+
 
 ## 7. Critérios de Avaliação
 
