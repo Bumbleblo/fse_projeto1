@@ -6,14 +6,14 @@ BINDIR= bin/
 
 SOURCES := $(wildcard $(SRCDIR)/*.c)
 
-TARGET = bme280
+TARGET = modbus
 
 all: clean 
-	@echo "compiling bm280 module"
+	@echo "compiling modbus module"
 	@mkdir $(BINDIR)
-	$(CC) $(SRCDIR)/bme280.c -Iinclude -o $(BINDIR)/bme280.o
-	$(CC) $(SRCDIR)/linux_userspace.c -Iinclude -o $(BINDIR)/linux_userspace.o
-	@echo "bm280 module compiled"
+	$(CC) src/modbus.c -Iinclude -o bin/modbus.o
+	$(CC) src/crc16.c -Iinclude -o bin/crc16.o
+	@echo "modbus module compiled"
 
 clean:
 	@rm -rf bin

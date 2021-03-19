@@ -1,30 +1,32 @@
-TARGET = projeto1
+TARGET=projeto1
 #CC     = gcc -c
 CFLAGS = -Wall
 
-LINKER = gcc -o
+#LINKER = gcc -o
 LFLAGS = -Wall
 
 SOURCES = $(wildcard *.c)
 INCLUDES = $(wildcard *.h)
 OBJECTS = $(wildcard: .c=.o)
-MAKE= make
+MAKE=make
 
 CC=/pitools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-gcc
 
-#main:
-#	$(CC) main.c -Ibme280/include -o main.o
+all:  main temperatura modbus
+	$(CC) -o $(TARGET) main.o bme280/bin/bme280.o modbus/bin/crc16.o modbus/bin/modbus.o PID/bin/pid.o -Imodbus/include -IPID/include 
 
-#temperatura:
-#	cd bme280 && $(MAKE)
+main:
+	$(CC) -c  main.c -Ibme280/include -Imodbus/include -IPID/include -o main.o 
 
-#compile:  main temperatura
-#	$(LINKER) $(TARGET) main.o bme280/bin/bme280.o
+temperatura:
+	cd bme280 && $(MAKE)
 
-#clean:
-#	rm -rf bme280/bin
-#	rm *.o
-# 	rm $(TARGET)
+modbus:
+	cd modbus && $(MAKE)
 
-all:
-	$(CC) linux_userspace.c bme280/src/bme280.c -Ibme280/include/
+pid:
+	cd PID && $(MAKE)
+
+clean:
+	rm -rf bme280/bin modbus/bin PID/bin
+	rm *.o
