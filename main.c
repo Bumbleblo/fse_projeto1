@@ -62,6 +62,8 @@ void handle_exit(int sig){
 
 int main(){
 
+    wiringPiSetup();
+
     // handles ctrl + c sigint signal
     signal(SIGINT, handle_exit);
 

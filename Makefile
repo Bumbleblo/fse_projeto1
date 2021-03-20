@@ -10,7 +10,7 @@ INCLUDES = $(wildcard *.h)
 OBJECTS = $(wildcard: .c=.o)
 MAKE=make
 
-CC=/pitools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-gcc
+CC=gcc
 
 all:  main temperatura modbus
 	$(CC) -o $(TARGET) main.o bme280/bin/bme280.o bme280/bin/linux_userspace.o modbus/bin/crc16.o modbus/bin/modbus.o PID/bin/pid.o -Imodbus/include -IPID/include -lwiringPi -lrt -lcrypt -lm -DDEBUG
