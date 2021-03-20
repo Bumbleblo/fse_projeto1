@@ -24,13 +24,6 @@ ModBusString *createMessage(char address, char function, char subfunction, unsig
 
     crc.data = calcula_CRC(modbusString->message, 3 + messageSize);
 
-    printf("%d\n", crc.data);
-
-    for(i = 0; i<2; ++i)
-        printf("%x ", crc.string[i]);
-
-    printf("\n");
-
     *ptr++ = crc.string[0];
     *ptr++ = crc.string[1];
 
@@ -38,3 +31,4 @@ ModBusString *createMessage(char address, char function, char subfunction, unsig
 
     return modbusString;
 }
+

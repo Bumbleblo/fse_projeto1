@@ -13,10 +13,11 @@ MAKE=make
 CC=/pitools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-gcc
 
 all:  main temperatura modbus
-	$(CC) -o $(TARGET) main.o bme280/bin/bme280.o modbus/bin/crc16.o modbus/bin/modbus.o PID/bin/pid.o -Imodbus/include -IPID/include 
+	$(CC) -o $(TARGET) main.o bme280/bin/bme280.o bme280/bin/linux_userspace.o modbus/bin/crc16.o modbus/bin/modbus.o PID/bin/pid.o -Imodbus/include -IPID/include -lwiringPi -lrt -lcrypt -lm -DDEBUG
 
 main:
-	$(CC) -c  main.c -Ibme280/include -Imodbus/include -IPID/include -o main.o 
+	$(CC) -c main.c -Ibme280/include -Imodbus/include -IPID/include -DDEBUG -o main.o -lwiringPi
+
 
 temperatura:
 	cd bme280 && $(MAKE)
