@@ -12,11 +12,26 @@
 #include "linux_userspace.h"
 
 #define ARDUINO_DEVICE 0x1
+#define GPIO_R_PIN 23
+#define GPIO_V_PIN 24
 
 struct temp_data{
     double temperature;
     unsigned char bytes[4];
 };
+
+
+void ligaRegistor(){
+    int i;
+    for(i=0; i<1024; ++i){
+        pwnWrite(GRPIO_R_PIN, i);
+    }
+
+}
+
+void desligaRegistor(){
+    pwnWrite(GPPIO_R_PIN, 0);
+}
 
 int init_uart(char *path){
 
@@ -56,13 +71,21 @@ void handle_exit(int sig){
     //bme280 don't have a close api
 
     // close gpio
+    desligaResitor();
     exit(0);
 
 }
 
 int main(){
 
-    wiringPiSetup();
+    // wiring pi setup
+    if(wiringPiSetup() == -1){
+        fprintf(stderr, "WiringPi setup error\n");
+        exit(1);
+    }
+
+    pinMode(GPIO_V_PIN, PWN_OUTPUT);
+    pinMode(GPIO_R_PIN, PWN_OUTPUT);
 
     // handles ctrl + c sigint signal
     signal(SIGINT, handle_exit);
@@ -191,8 +214,24 @@ int main(){
         #endif
 
         // update PID
-        pid_atualiza_referencia(temp.temperature);
-        controle = pid_controle(potence.temperature);
+        pid_atualiza_referencia(potence.temperature);
+        controle = pid_controle(temp.temperature);
+
+
+        if(controle > 0){
+            ligaRegistor();
+            //liga resisto
+            //desliga ventoinha
+        }else{
+            if(controle < -20){
+                //aciona_ventoinha
+            }else{
+                //desliga_ventoinha();
+            }
+
+            desligaResistor();
+            //desliga_resistor
+        }
 
         #ifdef DEBUG
             printf("%lf\n", controle);
