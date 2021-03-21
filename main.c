@@ -10,27 +10,46 @@
 #include "bme280.h"
 #include "pid.h"
 #include "linux_userspace.h"
+#include "lcd.h"
 
 #define ARDUINO_DEVICE 0x1
 #define GPIO_R_PIN 23
 #define GPIO_V_PIN 24
 
-struct temp_data{
-    double temperature;
+typedef union TemperatureData{
+    float temperature;
     unsigned char bytes[4];
-};
+}TemperatureData;
 
+void onResistor(double controle){
 
-void ligaRegistor(){
-    int i;
-    for(i=0; i<1024; ++i){
-        pwnWrite(GRPIO_R_PIN, i);
-    }
+    int result  = (int)controle*10.24;
+
+    #ifdef DEBUG
+        printf("Resistor value: %d\n", result);
+    #endif
+
+    softPwmWrite(GPIO_R_PIN, result);
 
 }
 
-void desligaRegistor(){
-    pwnWrite(GPPIO_R_PIN, 0);
+void offResistor(){
+    softPwmWrite(GPIO_R_PIN, 0);
+}
+
+void onCooler(double controle){
+
+    int result  = (int)controle*10.24;
+
+    #ifdef DEBUG
+        printf("Resistor value: %d\n", result);
+    #endif
+
+    softPwmWrite(GPIO_V_PIN, result);
+}
+
+void offCooler(){
+    softPwmWrite(GPIO_V_PIN, 0);
 }
 
 int init_uart(char *path){
@@ -68,35 +87,37 @@ void handle_exit(int sig){
     printf("Closing uart\n");
     close(uart0_filestream);
 
-    //bme280 don't have a close api
-
     // close gpio
-    desligaResitor();
+    printf("Closing GPIO\n");
+    offResistor();
+    offCooller();
+
     exit(0);
 
 }
 
 int main(){
 
+    // handles ctrl + c sigint signal
+    signal(SIGINT, handle_exit);
+
     // wiring pi setup
-    if(wiringPiSetup() == -1){
+    printf("Configurando WiringPi\n");
+    if(wiringPiSetupGpio() == -1){
         fprintf(stderr, "WiringPi setup error\n");
         exit(1);
     }
 
-    pinMode(GPIO_V_PIN, PWN_OUTPUT);
-    pinMode(GPIO_R_PIN, PWN_OUTPUT);
-
-    // handles ctrl + c sigint signal
-    signal(SIGINT, handle_exit);
+    softPwmCreate(GPIO_R_PIN, 0, 1024);
+    softPwmCreate(GPIO_V_PIN, 0, 1024);
 
     //configure PID
     pid_configura_constantes(5.0, 1.0, 5.0);
     double controle;
 
     //configure bme280
-    struct bme280_data leitura;
     printf("Configurando bme280\n");
+    struct bme280_data leitura;
     struct bme280_dev bme280_device;
     struct identifier id;
 
@@ -159,12 +180,14 @@ int main(){
 
 
         int i;
-        struct temp_data temp;
+
+        TemperatureData temp;
+
         for(i=3; i<7; ++i)
             temp.bytes[i-3] =rx_buffer[i];
 
         #ifdef DEBUG
-            printf("Temperature: %lf\n", temp.temperature);
+            printf("Temperature: %f\n", temp.temperature);
         #endif 
 
         //Getting potence MODBUS
@@ -172,7 +195,8 @@ int main(){
         
         // Getting potence MODBUS
         
-        struct temp_data potence;
+
+        TemperatureData potence;
 
         px_buffer = createMessage(
             ARDUINO_DEVICE,
@@ -201,7 +225,7 @@ int main(){
 
 
         #ifdef DEBUG
-            printf("Potence: %lf\n", potence.temperature);
+            printf("Potence: %f\n", potence.temperature);
         #endif
 
 
@@ -217,21 +241,22 @@ int main(){
         pid_atualiza_referencia(potence.temperature);
         controle = pid_controle(temp.temperature);
 
+        printf("Control %lf\n", controle);
 
         if(controle > 0){
-            ligaRegistor();
-            //liga resisto
-            //desliga ventoinha
+            onResistor(controle);
+            offCooler();
         }else{
             if(controle < -20){
-                //aciona_ventoinha
+                onCooler(-1*controle);
             }else{
-                //desliga_ventoinha();
+                offCooler();
             }
 
-            desligaResistor();
-            //desliga_resistor
+            offResistor();
         }
+
+        showLCD((float)potence.temperature, (float)temp.temperature, (float)potence.temperature);
 
         #ifdef DEBUG
             printf("%lf\n", controle);
