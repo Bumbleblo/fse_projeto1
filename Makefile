@@ -12,7 +12,7 @@ all:  main bme280 modbus pid lcd log
 
 main: createbin
 	@echo "Compiling project binary"
-	$(CC) -c main.c -Ibme280/include -Imodbus/include -Ipid/include -Ilog/include -DDEBUG -o main.o -lwiringPi
+	$(CC) -c main.c -Ibme280/include -Imodbus/include -Ipid/include -Ilog/include -Ilcd/include-DDEBUG -o main.o -lwiringPi
 
 bme280: createbin
 	@echo "Compiling BME280 module"A

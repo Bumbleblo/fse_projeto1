@@ -45,5 +45,6 @@ void ClrLcd(void); // clr LCD return home
 void typeln(const char *s);
 void typeChar(char val);
 void showLCD(float tr, float ti, float te);
+void setupLCD();
 
 int fd;  // seen by all subroutines

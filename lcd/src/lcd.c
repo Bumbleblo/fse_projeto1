@@ -20,6 +20,8 @@
 
 #include "lcd.h"
 
+#define I2C_ADDR 0x27
+
 void showLCD(float tr, float ti, float te)
 {
 
@@ -35,6 +37,17 @@ void showLCD(float tr, float ti, float te)
 
     typeln("TE:");
     typeFloat(te);
+
+}
+
+void setupLCD()
+{
+
+    if (wiringPiSetup() == -1) 
+        exit (1);
+
+    fd = wiringPiI2CSetup(I2C_ADDR);
+    lcd_init();
 
 }
 

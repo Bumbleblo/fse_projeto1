@@ -65,58 +65,11 @@ O sistema como um todo é composto por:
 5. O potenciômetro é conectado à porta analógica (A1) do Arduino;
 6. O sensor de temperatura LM35 para medição do ambiente controlado está ligado à porta analógica (A0) do Arduino;
 
-## 5. Requisitos
+## 5. Compilando o projeto
 
-Os sistema de controle possui os seguintes requisitos:
-1. O código deve ser desenvolvido em C/C++;
-2. O sistema deve implementar o controle de temperatura do ambiente fechado utilizando a técnica de controle PID para o  Resistor e a Ventoinha;
-3. O sistema deve apresentar uma interface de controle via terminal com menu de interação com o usuário e dados de temperaturas (TI, TE, TR) sendo atualizados a cada 1 segundo;
-4. O usuário deve ser capaz de escolher se quer definir a temperatura de referência (TR) através de entrada de teclado ou pelo potenciômetro (Durante a execução do programa);
-5. No caso da temperatura ser definida pelo potenciômetro, o programa deve consultar o valor do potenciômetro através da comunicação UART com o Arduino a cada 1 segundo;
-6. O sistema deve apresentar na tela LCD os valores das temperaturas (TI, TE, TR);
-7. O programa deve gerar um log em arquivo CSV das seguintes informações a cada 02 segundos com os seguintes valores: (Data e hora, temperatura interna, temperatura externa, temperatura definida pelo usuário, valor de acionamento dos atuadores (Resistor e Venoinha em valor percentual)).
-8. O código deve possuir Makefile para compilação;
-9. O sistema deve conter em seu README as instruções de compilação e uso, bem como gráficos* com o resultado de um experimento sendo executado pelo período de 10 minutos com variação da temperatura de referência sendo dada pelo potenciômetro.
- 
-\* Serão necessários dois gráficos. Um deles plotando as temperaturas (Ambiente, Interna e Referência (Potenciômetro)) e outro gráfico com o valor do acionamento dos atuadores (Resistor / Ventoinha) em valor percentual entre -100% e 100%.
+Para realizar a compilação do projeto primeiro é preciso instalar as dependências e rodar o comando make
 
-## 6. Comunicação UART com Arduino
-
-A leitura do valor do potenciômetro deve seguir o mesmo protocolo MODBUS utilizado no [Exercício 2]([referencias/Exercicio_1_UART.pdf](https://gitlab.com/fse_fga/projetos_2020_2/codigo-arduino-exercicio-2)). 
-O Arduino fornece duas informações para o sistema, valor da temperatura interna (Sensor LM35) e valor da temperatura de referência (Potenciômetro).
-
-Para acessar as informações via UART envie mensagens em formato MODBUS com o seguinte conteúdo:
-
-1. Código do Dispositivo (Arduino): 0x01
-2. Leitura de Valor de Temperatura Interna (TI): Código 0x23, Sub-código: 0xC1 + 4 últimos dígitos da matrícula. O retorno será o valor em Float (4 bytes) da temperatura interna do sistema com o pacote no formato MODBUS;
-4. Leitura da temperatura de referência - TR (Potenciômetro): Código 0x23, Sub-código: 0xC2 + 4 últimos dígitos da matrícula. O retorno será o valor em Float (4 bytes) da temperatura de referência definida pelo usuário com o pacote no formato MODBUS;
-
-<p style="text-align: center;">Tabela 1 - Códigos do Protocolo de Comunicação</p>
-
-| Código |	Sub-código + Matricula | Comando de Solicitação de Dados |	Mensagem de Retorno |
-|:-:|:-:|:--|:--|
-| **0x23** | **0xC1** N N N N |	Solicita Temperatura Interna  | float (4 bytes) |
-| **0x23** | **0xC2** N N N N |	Solicita Temperatura Potenciômetro	| float (4 bytes) |
-
-
-## 7. Critérios de Avaliação
-
-A avaliação será realizada seguindo os seguintes critérios:
-
-|   ITEM    |   COMENTÁRIO  |   VALOR   |
-|------------------------|---------------------------------------------------------------------------------------------------------|---------|
-|**Implementação do controlador PID** | Correta implementação do controlador PID (Resistor / Venotinha), incluindo a leitura das temperaturas e acionamento dos atuadores. |    2,0 |
-|**Menu de controle**        | Correta implementação do menu com as opções de acesso do usuário e sua atualização de informações. | 1,0 |
-|**Leitura da Temperatura Ambiente**| Leitura dos valores de Temperatura Ambiente (Sensor BME280). | 0,5 |
-|**Leitura da Temperatura Interna e Potenciômetro**| Leitura dos valores de Temperatura Internet e Potenciômetro através da comunicação MODBUS-UART. | 1,5 |
-|**Mostrador no LCD**        | Apresentação das 3 temperatudas no LCD. | 1,0 |
-|**Armazenamento em arquivo**| Armazenamento em arquivo CSV dos dados medidos. |   1,0 |
-|**Qualidade do Código**     | Utilização de boas práticas como o uso de bons nomes, modularização e organização em geral.    |  2,0 |
-|**README com Experimento** | Documentação README com instruçoes de compilaçõa, uso e relatório do experimento com o gráfico. |  1,0 |
-
-|**Pontuação Extra**         |   Qualidade e usabilidade acima da média.  |  0,5   |
-
-## 7. Referências
+## 6. Referências
 
 [PID - Wikipedia](https://pt.wikipedia.org/wiki/Controlador_proporcional_integral_derivativo)  
 [Driver da Bosh para o sensor BME280](https://github.com/BoschSensortec/BME280_driver)  
