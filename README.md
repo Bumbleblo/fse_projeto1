@@ -2,6 +2,12 @@
 
 Projeto 1 da disciplina de Fundamentos de Sistemas Embarcados (2020/2)
 
+## Experimento
+
+![Experimento](graph.png)
+
+Para instruções de compilação veja item 5.
+
 ## 1. Objetivos
 
 Este trabalho tem por objetivo a implementação do controle de temperatura de um sistema que possui internamente dois dispositivos para alterar sua temperatura. O primeiro é um resistor de potência de 15 Watts utilziado para aumentar temperatura e o segundo, uma ventoinha que puxa o ar externo (à temperatura ambiente) para reduzir a temperatura. 

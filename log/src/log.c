@@ -15,7 +15,7 @@ void logStatus(float ti, float te, float tu, float control)
     struct tm *ptm = localtime(&rawtime);
     char message[100];
 
-    strftime(message, 100, "%DT%T", ptm);
+    strftime(message, 100, "%FT%T", ptm);
 
     fprintf(logfile,"%s,%.4f,%.4f,%.4f,%.4f\n", message, ti, te, tu, control);
 
