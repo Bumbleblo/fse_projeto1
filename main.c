@@ -11,6 +11,7 @@
 #include "pid.h"
 #include "linux_userspace.h"
 #include "lcd.h"
+#include "log.h"
 
 #define ARDUINO_DEVICE 0x1
 #define GPIO_R_PIN 23
@@ -90,13 +91,22 @@ void handle_exit(int sig){
     // close gpio
     printf("Closing GPIO\n");
     offResistor();
-    offCooller();
+    offCooler();
+
+    printf("Closing LOG\n");
+    closeLog();
 
     exit(0);
 
 }
 
 int main(){
+
+    // init lcd
+    lcd_init();
+
+    // init log
+    initLog("report.csv");
 
     // handles ctrl + c sigint signal
     signal(SIGINT, handle_exit);
@@ -152,7 +162,6 @@ int main(){
 
         // Read reference temperature
         printf("Reading reference temperature (bme280)\n");
-        
         leitura = readTemperatureData(&bme280_device);
 
         // Getting temperature MODBUS
@@ -178,7 +187,6 @@ int main(){
             fprintf(stderr, "Read error\n");
         }
 
-
         int i;
 
         TemperatureData temp;
@@ -193,9 +201,6 @@ int main(){
         //Getting potence MODBUS
         printf("Reading potence reference (potenciomento)\n");
         
-        // Getting potence MODBUS
-        
-
         TemperatureData potence;
 
         px_buffer = createMessage(
@@ -257,6 +262,14 @@ int main(){
         }
 
         showLCD((float)potence.temperature, (float)temp.temperature, (float)potence.temperature);
+
+        logStatus(
+            (float)temp.temperature,
+            (float)leitura.temperature,
+            (float)potence.temperature, 
+            (float)controle
+        );
+
 
         #ifdef DEBUG
             printf("%lf\n", controle);

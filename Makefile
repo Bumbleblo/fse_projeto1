@@ -3,16 +3,16 @@ TARGET=projeto1
 BINDIR=bin
 CC=gcc
 
-all:  main bme280 modbus pid lcd
+all:  main bme280 modbus pid lcd log
 	@echo "Linking"
 	$(CC) -o $(TARGET) \
-		main.o bin/linux_userspace.o bin/bme280.o bin/modbus.o bin/crc16.o bin/pid.o bin/lcd.o \
-		-Imodbus/include -Ibme280/include -Ipid/include -Ilcd/include\
+		main.o bin/linux_userspace.o bin/bme280.o bin/modbus.o bin/crc16.o bin/pid.o bin/lcd.o bin/log.o\
+		-Imodbus/include -Ibme280/include -Ipid/include -Ilcd/include -Ilog/include\
 		-lwiringPi -lrt -lcrypt -lm -DDEBUG
 
 main: createbin
 	@echo "Compiling project binary"
-	$(CC) -c main.c -Ibme280/include -Imodbus/include -Ipid/include -DDEBUG -o main.o -lwiringPi
+	$(CC) -c main.c -Ibme280/include -Imodbus/include -Ipid/include -Ilog/include -DDEBUG -o main.o -lwiringPi
 
 bme280: createbin
 	@echo "Compiling BME280 module"A
@@ -31,6 +31,10 @@ pid: createbin
 lcd: createbin
 	@echo "Compiling LCD module"
 	$(CC) -c lcd/src/lcd.c -Ilcd/include -o $(BINDIR)/lcd.o
+
+log: createbin
+	@echo "Compiling LOG module"
+	$(CC) -c log/src/log.c -Ilog/include -o $(BINDIR)/log.o
 
 createbin:
 	@mkdir -p bin

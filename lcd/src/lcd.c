@@ -20,7 +20,7 @@
 
 #include "lcd.h"
 
-void showLCD(double tr, double ti, double te)
+void showLCD(float tr, float ti, float te)
 {
 
     lcdLoc(LINE1);
